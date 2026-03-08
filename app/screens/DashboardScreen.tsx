@@ -1,19 +1,20 @@
-import { Feather, MaterialIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Dimensions,
-  Image,
-  ImageBackground,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
+  View,
+  ScrollView,
+  SafeAreaView,
+  StatusBar,
+  Image,
   TouchableOpacity,
-  View
+  Dimensions,
+  Platform,
+  ImageBackground
 } from 'react-native';
+import { MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import auth from '@react-native-firebase/auth';
 
 const { width } = Dimensions.get('window');
 
@@ -44,6 +45,7 @@ const theme = {
 export default function DashboardScreen() {
   const [isDark, setIsDark] = useState(true);
   const currentTheme = isDark ? theme.dark : theme.light;
+  const user = auth().currentUser;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.bg }]}>
@@ -61,7 +63,7 @@ export default function DashboardScreen() {
             <View style={styles.profileContainer}>
               <View style={[styles.profileImageWrapper, { borderColor: currentTheme.primary }]}>
                 <Image 
-                  source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDST2ZsxuyNBNuOE4nUWskzn2dek6SkdNpRK-1V8eizyLFPuaDbSrFEYADilFjH73A8aPVJ-3pXHh0_ejVcQyewR8L_MitP5x5soBY-hiBfIxZkHAy3I6wyegKa1SZmU6_hm8nNv9DPGKDenheErnoO88ZCM3DaUSGwqxhlBw8uZ9mwA7B7grgfO2jRxb0VxJQXm94Jy7xfCx2EKk-Ux532x5Isar263C3QiJwA9xzKRHw1aDgKwh24iVDy8FxKJ3Z2kfE7gPybSTE' }} 
+                  source={{ uri: user?.photoURL || 'https://lh3.googleusercontent.com/aida-public/AB6AXuDST2ZsxuyNBNuOE4nUWskzn2dek6SkdNpRK-1V8eizyLFPuaDbSrFEYADilFjH73A8aPVJ-3pXHh0_ejVcQyewR8L_MitP5x5soBY-hiBfIxZkHAy3I6wyegKa1SZmU6_hm8nNv9DPGKDenheErnoO88ZCM3DaUSGwqxhlBw8uZ9mwA7B7grgfO2jRxb0VxJQXm94Jy7xfCx2EKk-Ux532x5Isar263C3QiJwA9xzKRHw1aDgKwh24iVDy8FxKJ3Z2kfE7gPybSTE' }} 
                   style={styles.profileImage}
                 />
               </View>
@@ -69,7 +71,7 @@ export default function DashboardScreen() {
             </View>
             <View>
               <Text style={[styles.welcomeText, { color: currentTheme.subtext }]}>WELCOME BACK</Text>
-              <Text style={[styles.userName, { color: currentTheme.text }]}>Hello, Alex!</Text>
+              <Text style={[styles.userName, { color: currentTheme.text }]}>Hello, {user?.displayName ? user.displayName.split(' ')[0] : 'Alex'}!</Text>
             </View>
           </View>
           

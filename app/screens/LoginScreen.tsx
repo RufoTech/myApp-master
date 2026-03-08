@@ -1,23 +1,58 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  TextInput, 
-  TouchableOpacity, 
-  SafeAreaView, 
-  StatusBar,
-  ScrollView,
-  Platform,
-  Image
-} from 'react-native';
 import { colors } from '@/constants/theme';
-import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  Image,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '802032521156-plrtru1qe837u5cr60nl2p5jtsik201b.apps.googleusercontent.com',
+    });
+  }, []);
+
+  async function onGoogleButtonPress() {
+    try {
+      // Check if your device supports Google Play
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      // Get the users ID token
+      const response = await GoogleSignin.signIn();
+      const idToken = response.data?.idToken;
+      
+      if (!idToken) {
+        throw new Error('No ID token found');
+      }
+
+      // Create a Google credential with the token
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      // Sign-in the user with the credential
+      await auth().signInWithCredential(googleCredential);
+      
+      // Navigate to tabs upon successful login
+      router.replace('/(tabs)');
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Google Sign-In Error', String(error));
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -103,7 +138,7 @@ export default function LoginScreen() {
 
         {/* Social Logins */}
         <View style={styles.socialContainer}>
-          <TouchableOpacity style={styles.socialButton}>
+          <TouchableOpacity style={styles.socialButton} onPress={onGoogleButtonPress}>
             <Image 
               source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBD8oHVJB8N0wRAb00bfy0dauuxWculNOpn2LZk2P_m81mkKsjoOUe1WqmUxUS96V5FIijGkdaIXWK5-4QZZGkUF4aXCl6j96zSJzTiBYas47AfXHKbWqfCi_OQOPA4HNBFr_TzmAbZLst4WE2r30SMYl3nhEAoGoXE04re7nMS_5EymNwGdzBGdLtM1ugd4k5h1uEHN5uaB5opnlHrZ5D3wu9J3d75OfvKpe6TS4_qvs088K6b_g1NeUuMYneejDOmFafwroy7TvA' }}
               style={styles.googleIcon}
