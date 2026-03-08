@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
+  Alert,
+  Dimensions,
+  Image,
+  ImageBackground,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
-  View,
-  ScrollView,
-  SafeAreaView,
-  StatusBar,
-  Image,
   TouchableOpacity,
-  Dimensions,
-  Platform,
-  ImageBackground
+  View
 } from 'react-native';
-import { MaterialIcons, Feather, Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import auth from '@react-native-firebase/auth';
 
 const { width } = Dimensions.get('window');
 
@@ -43,9 +46,28 @@ const theme = {
 };
 
 export default function DashboardScreen() {
+  const router = useRouter();
   const [isDark, setIsDark] = useState(true);
   const currentTheme = isDark ? theme.dark : theme.light;
   const user = auth().currentUser;
+
+  // GoogleSignin'i yapılandır
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '802032521156-plrtru1qe837u5cr60nl2p5jtsik201b.apps.googleusercontent.com',
+    });
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await GoogleSignin.signOut(); // Google oturumunu kapat
+      await auth().signOut(); // Firebase oturumunu kapat
+      router.replace('/login'); // Login ekranına yönlendir
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to log out');
+    }
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.bg }]}>
@@ -85,8 +107,11 @@ export default function DashboardScreen() {
                 <Feather name="moon" size={20} color="#0f172a" />
               }
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.iconButton, { backgroundColor: isDark ? 'rgba(204, 255, 0, 0.1)' : '#e2e8f0' }]}>
-              <MaterialIcons name="notifications-none" size={20} color={isDark ? currentTheme.primary : '#0f172a'} />
+            <TouchableOpacity 
+              onPress={handleLogout}
+              style={[styles.iconButton, { backgroundColor: isDark ? 'rgba(255, 59, 48, 0.1)' : '#fee2e2' }]}
+            >
+              <MaterialIcons name="logout" size={20} color={isDark ? '#ff3b30' : '#ef4444'} />
             </TouchableOpacity>
           </View>
         </View>
@@ -226,28 +251,7 @@ export default function DashboardScreen() {
 
       </ScrollView>
 
-      {/* Custom Bottom Navigation Bar (as requested) */}
-      <View style={[styles.bottomNav, { backgroundColor: currentTheme.navBg, borderTopColor: currentTheme.navBorder }]}>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="home" size={24} color={isDark ? '#ccff00' : '#65a30d'} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="fitness-center" size={24} color={currentTheme.subtext} />
-        </TouchableOpacity>
-        
-        <View style={styles.fabContainer}>
-          <TouchableOpacity style={[styles.fab, { borderColor: currentTheme.bg }]}>
-            <MaterialIcons name="add" size={32} color="#0f172a" />
-          </TouchableOpacity>
-        </View>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="calendar-today" size={24} color={currentTheme.subtext} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <MaterialIcons name="person" size={24} color={currentTheme.subtext} />
-        </TouchableOpacity>
-      </View>
+
     </SafeAreaView>
   );
 }

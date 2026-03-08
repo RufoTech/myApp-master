@@ -46,13 +46,19 @@ export default function LoginScreen() {
       // Sign-in the user with the credential
       await auth().signInWithCredential(googleCredential);
       
-      // Navigate to tabs upon successful login
-      router.replace('/(tabs)');
+      // Navigate to GoalSelection screen upon successful login
+      router.replace('/screens/GoalSelectionScreen');
     } catch (error) {
       console.error(error);
       Alert.alert('Google Sign-In Error', String(error));
     }
   }
+
+  // Normal login fonksiyonu (şimdilik boş)
+  const handleNormalLogin = () => {
+    // router.replace('/screens/GoalSelectionScreen'); // Geçici olarak devre dışı
+    console.log("Normal login pressed");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -122,7 +128,7 @@ export default function LoginScreen() {
           <TouchableOpacity 
             style={styles.loginButton} 
             activeOpacity={0.9} 
-            onPress={() => router.replace('/(tabs)')}
+            onPress={handleNormalLogin} // Fonksiyon değiştirildi
           >
             <Text style={styles.loginButtonText}>Giriş / Login</Text>
           </TouchableOpacity>
