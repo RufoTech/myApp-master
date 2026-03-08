@@ -1,0 +1,299 @@
+import React, { useState } from 'react';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  TextInput, 
+  TouchableOpacity, 
+  SafeAreaView, 
+  StatusBar,
+  ScrollView,
+  Platform,
+  Image
+} from 'react-native';
+import { colors } from '@/constants/theme';
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+
+export default function LoginScreen() {
+  const router = useRouter();
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.backgroundDark} />
+      
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        
+        {/* Top Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.replace('/')} style={styles.backButton}>
+            <MaterialIcons name="arrow-back" size={24} color={colors.textMain} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>FitFlow</Text>
+          <View style={{ width: 40 }} />
+        </View>
+
+        {/* Hero Section */}
+        <View style={styles.heroSection}>
+          <Text style={styles.heroTitle}>Xoş Gəlmisiniz / Welcome Back</Text>
+          <Text style={styles.heroSubtitle}>Məşqinizə davam edin / Continue your workout journey</Text>
+        </View>
+
+        {/* Login Form */}
+        <View style={styles.formContainer}>
+          
+          {/* Email Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>E-poçt və ya Telefon / Email or Phone</Text>
+            <TextInput 
+              style={styles.input}
+              placeholder="nümunə@fitflow.com / example@fitflow.com"
+              placeholderTextColor={colors.textMuted}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+
+          {/* Password Field */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Şifrə / Password</Text>
+            <View style={styles.passwordContainer}>
+              <TextInput 
+                style={[styles.input, { flex: 1, paddingRight: 50 }]}
+                placeholder="••••••••"
+                placeholderTextColor={colors.textMuted}
+                secureTextEntry={!passwordVisible}
+              />
+              <TouchableOpacity 
+                style={styles.eyeIcon} 
+                onPress={() => setPasswordVisible(!passwordVisible)}
+              >
+                <MaterialIcons 
+                  name={passwordVisible ? "visibility" : "visibility-off"} 
+                  size={24} 
+                  color={colors.textMuted} 
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Forgot Password */}
+          <TouchableOpacity style={styles.forgotButton}>
+            <Text style={styles.forgotText}>Şifrəni unutmusunuz? / Forgot Password?</Text>
+          </TouchableOpacity>
+
+          {/* Main Login Button */}
+          <TouchableOpacity 
+            style={styles.loginButton} 
+            activeOpacity={0.9} 
+            onPress={() => router.replace('/(tabs)')}
+          >
+            <Text style={styles.loginButtonText}>Giriş / Login</Text>
+          </TouchableOpacity>
+
+        </View>
+
+        {/* Divider */}
+        <View style={styles.dividerContainer}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>VƏ YA / OR</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        {/* Social Logins */}
+        <View style={styles.socialContainer}>
+          <TouchableOpacity style={styles.socialButton}>
+            <Image 
+              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBD8oHVJB8N0wRAb00bfy0dauuxWculNOpn2LZk2P_m81mkKsjoOUe1WqmUxUS96V5FIijGkdaIXWK5-4QZZGkUF4aXCl6j96zSJzTiBYas47AfXHKbWqfCi_OQOPA4HNBFr_TzmAbZLst4WE2r30SMYl3nhEAoGoXE04re7nMS_5EymNwGdzBGdLtM1ugd4k5h1uEHN5uaB5opnlHrZ5D3wu9J3d75OfvKpe6TS4_qvs088K6b_g1NeUuMYneejDOmFafwroy7TvA' }}
+              style={styles.googleIcon}
+            />
+            <Text style={styles.socialButtonText}>Google ilə davam edin</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.socialButton}>
+            <FontAwesome name="apple" size={24} color={colors.textMain} />
+            <Text style={styles.socialButtonText}>Apple ilə davam edin</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Footer Link */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Hesabınız yoxdur? </Text>
+          <TouchableOpacity onPress={() => router.push('/register')}>
+            <Text style={styles.signUpText}>Qeydiyyatdan keçin / Sign up</Text>
+          </TouchableOpacity>
+        </View>
+
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.backgroundDark,
+    paddingTop: Platform.OS === 'android' ? 25 : 0,
+  },
+  scrollContent: {
+    padding: 24,
+    flexGrow: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 32,
+  },
+  backButton: {
+    padding: 8,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+  },
+  headerTitle: {
+    color: colors.primary,
+    fontSize: 20,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+    fontFamily: 'Inter_700Bold',
+  },
+  heroSection: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  heroTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.textMain,
+    textAlign: 'center',
+    marginBottom: 8,
+    fontFamily: 'Inter_700Bold',
+  },
+  heroSubtitle: {
+    fontSize: 14,
+    color: colors.textMuted,
+    textAlign: 'center',
+    fontFamily: 'Inter_400Regular',
+  },
+  formContainer: {
+    marginBottom: 24,
+  },
+  inputGroup: {
+    marginBottom: 16,
+  },
+  label: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    marginBottom: 8,
+    fontWeight: '500',
+    fontFamily: 'Inter_500Medium',
+  },
+  input: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    color: colors.textMain,
+    fontSize: 16,
+    fontFamily: 'Inter_400Regular',
+  },
+  passwordContainer: {
+    position: 'relative',
+    justifyContent: 'center',
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 16,
+    padding: 4,
+  },
+  forgotButton: {
+    alignSelf: 'flex-end',
+    marginBottom: 24,
+  },
+  forgotText: {
+    color: colors.primary,
+    fontSize: 14,
+    fontWeight: '600',
+    fontFamily: 'Inter_600SemiBold',
+  },
+  loginButton: {
+    backgroundColor: colors.primary,
+    height: 56,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  loginButtonText: {
+    color: colors.backgroundDark,
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'Inter_700Bold',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  dividerText: {
+    color: colors.textMuted,
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginHorizontal: 16,
+    fontFamily: 'Inter_600SemiBold',
+  },
+  socialContainer: {
+    gap: 12,
+    marginBottom: 32,
+  },
+  socialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    height: 56,
+    borderRadius: 12,
+    gap: 12,
+  },
+  socialButtonText: {
+    color: colors.textMain,
+    fontSize: 16,
+    fontWeight: '500',
+    fontFamily: 'Inter_500Medium',
+  },
+  googleIcon: {
+    width: 24,
+    height: 24,
+  },
+  footer: {
+    marginTop: 'auto',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingBottom: 16,
+  },
+  footerText: {
+    color: colors.textMuted,
+    fontSize: 14,
+    fontFamily: 'Inter_400Regular',
+  },
+  signUpText: {
+    color: colors.primary,
+    fontWeight: 'bold',
+    fontSize: 14,
+    fontFamily: 'Inter_700Bold',
+  },
+});
