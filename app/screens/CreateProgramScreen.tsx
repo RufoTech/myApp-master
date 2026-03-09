@@ -12,6 +12,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
+  Modal,
 } from 'react-native';
 
 export default function CreateProgramScreen() {
@@ -19,16 +21,27 @@ export default function CreateProgramScreen() {
   const [isDark, setIsDark] = useState(true);
   const [programName, setProgramName] = useState('');
   const [focus, setFocus] = useState('Gain Muscle');
+  const [selectedWeek, setSelectedWeek] = useState(1);
+  const [showLimitAlert, setShowLimitAlert] = useState(false);
+  const weeks = [1, 2, 3, 4];
 
-  // Initial workout data based on the HTML example
-  const [workouts, setWorkouts] = useState([
-    { id: 1, type: 'workout', title: 'Upper Body Power', subtitle: '6 exercises • 45 mins', day: 1, images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAKbZKbErvtnWKLTiLQvWfArW6zewG6Q0u6fVG0SUBeou_58u_qlral7NRqIbTQ_PquUqZrFJKq8gIyS7sWK5-_vpSfOFgVuaT4DIEg8A9KQNz_XkpV0klfrHSRdsnSXY-O9iqs2srKUNLLay-cJU_njfGGtfSMLeubiwB2kSxP7vUx8vKMSRFDoZKYfGiZuVdjjWkm9YJSZAY-mi0EUe7xMzpmsFP10hMFU0sDP6zpxUOdUKwu9T8jQAIxr3kcYtJB6ONu3RM_M4s',
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCl_YOPa2bbx2UJQk9yWuVc3ATdJm8rJe1vfrKGTuYbsOE5xVoXItSm7heq6-lm2u1NwPDHVX9OWzQ97GeoMxcJ7lCyt21sZgdRAIpx5vang-sfgQ0O9SbeQ2MBNzfe9nAfhnUJaUlzO2bOdrRDcmyJGGfPTEu5xDylyBURFqONGInaBld7b9aZ1D3Nyr78dq5l9n_TtC8891YFkFXv4Lky3TJrAO_sdbQofrFZZJHoHP4X_yI11AgYbr1DNYxepiN0lra2vESZvSY'
-    ], extraCount: 4 },
-    { id: 2, type: 'workout', title: 'Lower Body Strength', subtitle: '5 exercises • 55 mins', day: 2, images: [], extraCount: 0 },
-    { id: 3, type: 'rest', title: 'Active Rest Day', subtitle: '', day: 3, images: [], extraCount: 0 },
-  ]);
+  // Initial workout data structure - organized by weeks
+  const [workoutsByWeek, setWorkoutsByWeek] = useState({
+    1: [
+      { id: 1, type: 'workout', title: 'Upper Body Power', subtitle: '6 exercises • 45 mins', day: 1, images: [
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuAKbZKbErvtnWKLTiLQvWfArW6zewG6Q0u6fVG0SUBeou_58u_qlral7NRqIbTQ_PquUqZrFJKq8gIyS7sWK5-_vpSfOFgVuaT4DIEg8A9KQNz_XkpV0klfrHSRdsnSXY-O9iqs2srKUNLLay-cJU_njfGGtfSMLeubiwB2kSxP7vUx8vKMSRFDoZKYfGiZuVdjjWkm9YJSZAY-mi0EUe7xMzpmsFP10hMFU0sDP6zpxUOdUKwu9T8jQAIxr3kcYtJB6ONu3RM_M4s',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuCl_YOPa2bbx2UJQk9yWuVc3ATdJm8rJe1vfrKGTuYbsOE5xVoXItSm7heq6-lm2u1NwPDHVX9OWzQ97GeoMxcJ7lCyt21sZgdRAIpx5vang-sfgQ0O9SbeQ2MBNzfe9nAfhnUJaUlzO2bOdrRDcmyJGGfPTEu5xDylyBURFqONGInaBld7b9aZ1D3Nyr78dq5l9n_TtC8891YFkFXv4Lky3TJrAO_sdbQofrFZZJHoHP4X_yI11AgYbr1DNYxepiN0lra2vESZvSY'
+      ], extraCount: 4 },
+      { id: 2, type: 'workout', title: 'Lower Body Strength', subtitle: '5 exercises • 55 mins', day: 2, images: [], extraCount: 0 },
+      { id: 3, type: 'rest', title: 'Active Rest Day', subtitle: '', day: 3, images: [], extraCount: 0 },
+    ],
+    2: [],
+    3: [],
+    4: []
+  });
+
+  // Get current week's workouts
+  const currentWorkouts = workoutsByWeek[selectedWeek] || [];
 
   // Focus Options matching HTML icons
   const focusOptions = [
@@ -54,8 +67,13 @@ export default function CreateProgramScreen() {
   };
 
   const addWorkout = () => {
-    const nextDay = workouts.length + 1;
-    setWorkouts([...workouts, { 
+    if (currentWorkouts.length >= 7) {
+      setShowLimitAlert(true);
+      return;
+    }
+
+    const nextDay = currentWorkouts.length + 1;
+    const newWorkout = { 
       id: Date.now(), 
       type: 'workout', 
       title: 'New Workout', 
@@ -63,12 +81,22 @@ export default function CreateProgramScreen() {
       day: nextDay, 
       images: [], 
       extraCount: 0 
-    }]);
+    };
+
+    setWorkoutsByWeek({
+      ...workoutsByWeek,
+      [selectedWeek]: [...currentWorkouts, newWorkout]
+    });
   };
 
   const addRestDay = () => {
-    const nextDay = workouts.length + 1;
-    setWorkouts([...workouts, { 
+    if (currentWorkouts.length >= 7) {
+      setShowLimitAlert(true);
+      return;
+    }
+
+    const nextDay = currentWorkouts.length + 1;
+    const newRestDay = { 
       id: Date.now(), 
       type: 'rest', 
       title: 'Rest Day', 
@@ -76,15 +104,24 @@ export default function CreateProgramScreen() {
       day: nextDay, 
       images: [], 
       extraCount: 0 
-    }]);
+    };
+
+    setWorkoutsByWeek({
+      ...workoutsByWeek,
+      [selectedWeek]: [...currentWorkouts, newRestDay]
+    });
   };
 
   const removeWorkout = (id: number) => {
-    const updatedWorkouts = workouts.filter(w => w.id !== id).map((w, index) => ({
+    const updatedWeekWorkouts = currentWorkouts.filter(w => w.id !== id).map((w, index) => ({
       ...w,
       day: index + 1
     }));
-    setWorkouts(updatedWorkouts);
+
+    setWorkoutsByWeek({
+      ...workoutsByWeek,
+      [selectedWeek]: updatedWeekWorkouts
+    });
   };
 
   return (
@@ -168,8 +205,31 @@ export default function CreateProgramScreen() {
             <Text style={[styles.label, { color: theme.text, marginBottom: 0 }]}>SELECT WORKOUTS</Text>
           </View>
 
+          {/* Week Selector */}
+          <View style={styles.weekSelector}>
+            {weeks.map((week) => (
+              <TouchableOpacity
+                key={week}
+                onPress={() => setSelectedWeek(week)}
+                style={[
+                  styles.weekButton,
+                  selectedWeek === week ? styles.weekButtonSelected : styles.weekButtonUnselected,
+                  { 
+                    backgroundColor: selectedWeek === week ? theme.primary : theme.cardBg,
+                    borderColor: selectedWeek === week ? theme.primary : 'transparent'
+                  }
+                ]}
+              >
+                <Text style={[
+                  styles.weekText,
+                  { color: selectedWeek === week ? '#1f230f' : theme.text }
+                ]}>Week {week}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
           <View style={styles.workoutsContainer}>
-            {(workouts || []).map((item, index) => (
+            {currentWorkouts.map((item, index) => (
               <View key={item.id}>
                 {item.type === 'workout' ? (
                   <View style={[styles.workoutCard, { backgroundColor: theme.cardBg, borderColor: theme.cardBorder }]}>
@@ -184,7 +244,7 @@ export default function CreateProgramScreen() {
                          <TouchableOpacity style={[styles.actionButton, { marginRight: 8 }]} onPress={() => removeWorkout(item.id)}>
                           <MaterialCommunityIcons name="delete-outline" size={20} color="#ef4444" />
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.actionButton}>
+                        <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/screens/AddWorkoutScreen')}>
                           <MaterialIcons name="edit" size={20} color={theme.subtext} />
                         </TouchableOpacity>
                       </View>
@@ -266,6 +326,32 @@ export default function CreateProgramScreen() {
 
       </ScrollView>
 
+      {/* Limit Alert Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showLimitAlert}
+        onRequestClose={() => setShowLimitAlert(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.alertBox, { backgroundColor: isDark ? '#1f230f' : '#ffffff', borderColor: theme.primary }]}>
+            <View style={styles.alertIconContainer}>
+              <MaterialIcons name="warning" size={40} color={theme.primary} />
+            </View>
+            <Text style={[styles.alertTitle, { color: theme.text }]}>Maximum Limit Reached</Text>
+            <Text style={[styles.alertMessage, { color: theme.subtext }]}>
+              You can only add up to 7 days of workouts/rest per week.
+            </Text>
+            <TouchableOpacity 
+              style={[styles.alertButton, { backgroundColor: theme.primary }]}
+              onPress={() => setShowLimitAlert(false)}
+            >
+              <Text style={styles.alertButtonText}>Understood</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       {/* Footer */}
       <View style={[styles.footer, { backgroundColor: theme.bg, borderTopColor: 'rgba(204, 255, 0, 0.1)' }]}>
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
@@ -320,7 +406,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 56,
-    borderRadius: 12, // rounded-xl
+    borderRadius: 999, // rounded-xl
     paddingHorizontal: 16,
     fontSize: 18,
     borderWidth: 1,
@@ -343,6 +429,31 @@ const styles = StyleSheet.create({
   focusText: {
     fontSize: 14,
     fontWeight: '700',
+  },
+  weekSelector: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    gap: 8,
+  },
+  weekButton: {
+    flex: 1,
+    height: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  weekButtonSelected: {
+    // styles handled inline dynamically
+  },
+  weekButtonUnselected: {
+    // styles handled inline dynamically
+  },
+  weekText: {
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -508,5 +619,57 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '900',
     letterSpacing: 0.5,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  alertBox: {
+    width: '100%',
+    maxWidth: 320,
+    borderRadius: 24,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  alertIconContainer: {
+    marginBottom: 16,
+    padding: 12,
+    borderRadius: 50,
+    backgroundColor: 'rgba(204, 255, 0, 0.1)',
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  alertMessage: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  alertButton: {
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  alertButtonText: {
+    color: '#1f230f',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
