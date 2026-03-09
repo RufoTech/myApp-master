@@ -186,34 +186,46 @@ export default function DashboardScreen() {
             </TouchableOpacity>
           </View>
           
-          <View style={[styles.workoutCard, { borderColor: isDark ? 'rgba(204, 255, 0, 0.1)' : '#e2e8f0' }]}>
+          <TouchableOpacity 
+            style={[styles.workoutCard, { borderColor: isDark ? 'rgba(204, 255, 0, 0.1)' : '#e2e8f0' }]}
+            activeOpacity={0.9}
+          >
             <ImageBackground
               source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCI3xrdrlqpd6zybsFzh1uoDJW_RAThN-65xFUKUjIeLQpnVnoiBdvHicM2Wbj3MXYdOpqO6j1E4pWY7v1pknlmw5HdeqLDK4incQqa9CJ1ohskwTOTK2lKi8S9Qut8s28hZ1Vj4kHJ0aLsON8HKXM8Z18gFXJvw3nD8r0vvUpsAklNhALnZgZNUuJmw900bxjwFNxIGpFWSFYAR35orgrs2JlRxN-pYuZbTYcTVDChxhRA_3JnNbcYqDUf7MyxIt5HdTKhCvsfG_o' }}
               style={styles.workoutImage}
             >
               <LinearGradient
-                colors={['transparent', 'rgba(15, 23, 42, 0.4)', 'rgba(15, 23, 42, 0.9)']}
+                colors={['rgba(2, 6, 23, 0.9)', 'rgba(2, 6, 23, 0.4)', 'transparent']}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }}
                 style={styles.workoutGradient}
               />
               <View style={styles.workoutContent}>
-                <View style={styles.workoutTags}>
-                  <View style={styles.tag}>
-                    <Text style={styles.tagText}>INTERMEDIATE</Text>
+                <View style={styles.startBadgeContainer}>
+                  <View style={styles.startBadge}>
+                    <Text style={styles.startBadgeText}>LET'S START</Text>
                   </View>
-                  <View style={styles.timeTag}>
-                    <MaterialIcons name="schedule" size={14} color="#cbd5e1" />
-                    <Text style={[styles.timeText, { color: '#cbd5e1' }]}>45 mins</Text>
+                  <View style={styles.clockContainer}>
+                    <Feather name="clock" size={12} color="#cbd5e1" />
+                    <Text style={styles.clockText}>Let's Start</Text>
                   </View>
                 </View>
-                <Text style={styles.workoutTitle}>Chest & Triceps</Text>
-                <Text style={styles.workoutDescription} numberOfLines={1}>Focus on hypertrophy, controlled reps, and proper form.</Text>
-                <TouchableOpacity style={styles.startWorkoutButton}>
-                  <MaterialIcons name="play-arrow" size={24} color="#0f172a" />
-                  <Text style={styles.startWorkoutText}>Start Workout</Text>
+                
+                <Text style={styles.workoutTitle}>Your First Program</Text>
+                <Text style={styles.workoutDescription} numberOfLines={1}>
+                  Design your personalized training plan to get started on your fitness journey.
+                </Text>
+                
+                <TouchableOpacity 
+                  style={styles.createProgramButton}
+                  onPress={() => router.push('/screens/CreateProgramScreen')}
+                >
+                  <MaterialIcons name="play-arrow" size={20} color="#1f230f" />
+                  <Text style={styles.createProgramText}>Create Training Program</Text>
                 </TouchableOpacity>
               </View>
             </ImageBackground>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Recent Activity */}
@@ -445,31 +457,32 @@ const styles = StyleSheet.create({
     right: 0,
     padding: 20,
   },
-  workoutTags: {
+  startBadgeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 8,
     marginBottom: 8,
   },
-  tag: {
+  startBadge: {
     backgroundColor: '#ccff00',
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: 2,
     borderRadius: 4,
   },
-  tagText: {
-    color: '#0f172a',
+  startBadgeText: {
+    color: '#1f230f',
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
-  timeTag: {
+  clockContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
-  timeText: {
+  clockText: {
+    color: '#cbd5e1',
     fontSize: 12,
-    fontWeight: '500',
   },
   workoutTitle: {
     color: '#ffffff',
@@ -483,19 +496,20 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginBottom: 16,
   },
-  startWorkoutButton: {
+  createProgramButton: {
     backgroundColor: '#ccff00',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 8,
     gap: 8,
+    marginTop: 8,
   },
-  startWorkoutText: {
-    color: '#0f172a',
-    fontSize: 16,
-    fontWeight: '700',
+  createProgramText: {
+    color: '#1f230f',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   activityContainer: {
     gap: 16,
