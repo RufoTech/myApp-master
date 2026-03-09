@@ -50,7 +50,7 @@ export default function LevelSelectionScreen() {
 
   const handleFinish = () => {
     // Navigate to Personal Data Screen
-    router.replace('/screens/PersonalDataScreen');
+    router.push({ pathname: '/screens/PersonalDataScreen', params: { hideBackButton: 'true' } });
   };
 
   return (
@@ -59,18 +59,14 @@ export default function LevelSelectionScreen() {
       
       {/* Header */}
       <View style={styles.header}>
-        {/* Back button removed as per flow consistency, or keep if user wants to go back to Frequency? 
-            User asked to remove back buttons in previous steps. 
-            However, usually the last step might allow going back. 
-            But given "goback butonunu sil" instruction for previous screens, I'll stick to a clean header for now 
-            unless I want to enable going back to Frequency. 
-            Let's keep it consistent with "Addis Fitness" title only or "Onboarding".
-            User code has "Onboarding" and an ArrowLeft. 
-            I will keep "Onboarding" title but remove ArrowLeft based on previous strict instructions to remove back buttons.
-            Actually, user said "remove back button code from GoalSelection" and "LocationSelection". 
-            For this one, I'll play it safe and just show the title "Onboarding" without back button.
-        */}
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <MaterialIcons name="arrow-back" size={24} color="#f1f5f9" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Onboarding</Text>
+        <View style={{ width: 40 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -167,9 +163,17 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   headerTitle: {
     color: '#f1f5f9',

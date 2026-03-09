@@ -69,7 +69,7 @@ export default function GoalSelectionScreen() {
   };
 
   const handleNext = () => {
-    router.replace('/screens/LocationSelectionScreen');
+    router.push('/screens/LocationSelectionScreen');
   };
 
   return (

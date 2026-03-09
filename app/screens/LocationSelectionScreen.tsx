@@ -26,7 +26,7 @@ export default function LocationSelectionScreen() {
 
   const handleNext = () => {
     if (selectedLocation) {
-      router.replace('/screens/FrequencySelectionScreen');
+      router.push('/screens/FrequencySelectionScreen');
     }
   };
 
@@ -34,9 +34,16 @@ export default function LocationSelectionScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1f230f" />
       
-      {/* Header - Back button kaldırıldı */}
+      {/* Header */}
       <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <MaterialIcons name="arrow-back" size={24} color="#f1f5f9" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Addis Fitness</Text>
+        <View style={{ width: 40 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -188,11 +195,18 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', // Sadece başlık olduğu için ortaladık
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  // backButton stili silindi
+  backButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
   headerTitle: {
     color: '#f1f5f9',
     fontSize: 18,
