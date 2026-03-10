@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import GoogleIcon from '@/components/GoogleIcon';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -145,10 +146,7 @@ export default function LoginScreen() {
         {/* Social Logins */}
         <View style={styles.socialContainer}>
           <TouchableOpacity style={styles.socialButton} onPress={onGoogleButtonPress}>
-            <Image 
-              source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBD8oHVJB8N0wRAb00bfy0dauuxWculNOpn2LZk2P_m81mkKsjoOUe1WqmUxUS96V5FIijGkdaIXWK5-4QZZGkUF4aXCl6j96zSJzTiBYas47AfXHKbWqfCi_OQOPA4HNBFr_TzmAbZLst4WE2r30SMYl3nhEAoGoXE04re7nMS_5EymNwGdzBGdLtM1ugd4k5h1uEHN5uaB5opnlHrZ5D3wu9J3d75OfvKpe6TS4_qvs088K6b_g1NeUuMYneejDOmFafwroy7TvA' }}
-              style={styles.googleIcon}
-            />
+            <GoogleIcon width={24} height={24} />
             <Text style={styles.socialButtonText}>Google ilə davam edin</Text>
           </TouchableOpacity>
 

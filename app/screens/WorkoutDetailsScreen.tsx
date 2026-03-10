@@ -64,6 +64,14 @@ export default function WorkoutDetailsScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#1f230f" />
       
+      {/* Back Button Overlay - Fixed Position */}
+      <TouchableOpacity 
+        style={styles.backButtonOverlay}
+        onPress={() => router.back()}
+      >
+        <MaterialIcons name="arrow-back" size={24} color="#f1f5f9" />
+      </TouchableOpacity>
+
       <ScrollView 
         style={styles.scrollView} 
         contentContainerStyle={styles.scrollContent}
@@ -80,13 +88,6 @@ export default function WorkoutDetailsScreen() {
               colors={['transparent', 'rgba(31, 35, 15, 0.8)']}
               style={styles.heroOverlay}
             />
-            {/* Back Button Overlay */}
-            <TouchableOpacity 
-              style={styles.backButtonOverlay}
-              onPress={() => router.back()}
-            >
-              <MaterialIcons name="arrow-back" size={24} color="#f1f5f9" />
-            </TouchableOpacity>
 
             <View style={styles.heroContent}>
               <View style={styles.levelBadge}>
@@ -190,14 +191,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   backButtonOverlay: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    zIndex: 10,
     width: 48,
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.3)',
     borderRadius: 24,
-    margin: 16,
-    alignSelf: 'flex-start',
   },
   heroContent: {
     padding: 24,
